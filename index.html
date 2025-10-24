@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 Happy Birthday Celebration 🎂</title>
+<style>
+body {
+  margin: 0;
+  background: linear-gradient(to bottom right, #ffb6c1, #ffe4e1);
+  font-family: 'Comic Sans MS', cursive;
+  text-align: center;
+  overflow: hidden;
+  color: #fff;
+}
+
+/* Hidden screens */
+#countdown, #fireworks, #birthdayScreen, #cakeScreen, #giftScreen, #endScreen {
+  display: none;
+}
+
+/* Countdown */
+#countdown {
+  font-size: 9rem;
+  font-weight: bold;
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ff1493;
+  text-shadow: 0 0 20px #fff, 0 0 40px #ff69b4;
+  animation: pop 1s infinite;
+}
+@keyframes pop {
+  0%,100% { transform: translate(-50%, -50%) scale(1); }
+  50% { transform: translate(-50%, -50%) scale(1.2); }
+}
+
+/* Glowing birthday text */
+#happyText {
+  font-size: 3rem;
+  animation: glow 2s infinite alternate;
+}
+@keyframes glow {
+  from { text-shadow: 0 0 20px #ff69b4, 0 0 40px #ff1493; }
+  to { text-shadow: 0 0 40px #fff, 0 0 80px #ff69b4; }
+}
+
+/* Buttons */
+button {
+  background: #ff69b4;
+  border: none;
+  padding: 15px 30px;
+  border-radius: 25px;
+  color: white;
+  font-size: 1.2rem;
+  margin: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+button:hover {
+  transform: scale(1.1);
+  background: #ff1493;
+}
+
+/* Cake */
+.cake {
+  width: 220px;
+  height: 160px;
+  margin: 30px auto;
+  position: relative;
+}
+.layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: auto;
+  border-radius: 10px;
+}
+.layer.bottom { width: 220px; height: 60px; background: linear-gradient(to bottom, #f7b7b1, #f1948a); bottom: 0; }
+.layer.middle { width: 200px; height: 50px; background: linear-gradient(to bottom, #fad7a0, #f8c471); bottom: 60px; }
+.layer.top { width: 180px; height: 40px; background: linear-gradient(to bottom, #f9e79f, #f7dc6f); bottom: 110px; }
+.icing { width: 190px; height: 25px; background: #fff; border-radius: 0 0 20px 20px; position: absolute; left: 15px; bottom: 125px; box-shadow: 0 2px 10px rgba(255,255,255,0.6); }
+.candle { width: 14px; height: 50px; background: repeating-linear-gradient(to top, red 0, red 5px, white 5px, white 10px); position: absolute; left: 103px; bottom: 150px; border-radius: 3px; }
+.flame { width: 18px; height: 25px; background: radial-gradient(circle at 10px 5px, yellow, orange 70%); border-radius: 50%; position: absolute; left: 100px; bottom: 200px; animation: flicker 0.2s infinite alternate; }
+@keyframes flicker { from { transform: scale(1); opacity: 1; } to { transform: scale(1.2); opacity: 0.8; } }
+
+/* Gift */
+#giftContainer {
+  margin-top: 30px;
+  position: relative;
+  width: 160px;
+  height: 160px;
+  margin-left: auto;
+  margin-right: auto;
+}
+#box { width: 160px; height: 120px; background: #ff69b4; position: absolute; bottom: 0; border-radius: 10px; }
+#ribbonV, #ribbonH { position: absolute; background: #fff; }
+#ribbonV { width: 20px; height: 120px; left: 70px; bottom: 0; }
+#ribbonH { width: 160px; height: 20px; bottom: 50px; }
+#lid { width: 160px; height: 40px; background: #ff1493; position: absolute; top: 0; border-radius: 10px; transform-origin: bottom; transition: transform 1s; }
+.openLid { transform: rotateX(150deg); }
+
+/* Vintage Letter */
+.vintageLetter {
+  width: 70%;
+  margin: 40px auto;
+  background: #f5e6c5;
+  border: 2px solid #c8b273;
+  border-radius: 10px;
+  padding: 30px;
+  font-family: 'Georgia', serif;
+  color: #5a4632;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+  animation: fadeInLetter 1s ease;
+}
+@keyframes fadeInLetter {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Message Box */
+#messageBox {
+  display: none;
+  text-align: center;
+  margin-top: 20px;
+}
+#userMessage {
+  width: 80%;
+  height: 100px;
+  border-radius: 10px;
+  border: none;
+  padding: 10px;
+  font-size: 1rem;
+}
+
+/* End Screen */
+#endScreen h2 {
+  font-size: 2.5rem;
+  text-shadow: 0 0 20px #ff69b4;
+}
+
+/* Fireworks */
+canvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+
+<audio id="bgMusic" src="https://www.fesliyanstudios.com/play-mp3/387" loop></audio>
+
+<div id="countdown">10</div>
+<canvas id="fireworks"></canvas>
+
+<!-- Birthday Screen -->
+<div id="birthdayScreen">
+  <h1 id="happyText">🎉 Happy Birthday to my special one! 🎂</h1>
+  <h2>25 Oct 2025 — Our 5th birthday celebration together! 💞</h2>
+  <button onclick="showCake()">🎂 Celebrate Birthday</button>
+  <button onclick="showGift()">🎁 Get Gift</button>
+</div>
+
+<!-- Cake Screen -->
+<div id="cakeScreen">
+  <h1>🎂 Blow the Candle!</h1><br><br>
+  <div class="cake">
+    <div class="layer bottom"></div>
+    <div class="layer middle"></div>
+    <div class="layer top"></div>
+    <div class="icing"></div>
+    <div class="candle"></div>
+    <div class="flame" id="flame"></div>
+  </div>
+  <button id="blowBtn" onclick="blowCandle()">💨 Blow Candle</button>
+</div>
+
+<!-- Gift Screen -->
+<div id="giftScreen">
+  <h1>🎁 Your Surprise Gift</h1>
+  <div id="giftContainer">
+    <div id="lid"></div>
+    <div id="box"></div>
+    <div id="ribbonV"></div>
+    <div id="ribbonH"></div>
+  </div>
+  <br>
+  <button id="openGiftBtn" onclick="openGift()">🎀 Open Gift</button>
+
+  <div id="letter" class="vintageLetter" style="display:none;">
+    <p id="letterText"></p>
+    <button id="nextLetterBtn" onclick="nextLetter()">Next ➜</button>
+  </div>
+
+  <div id="messageBox">
+    <h3>💬 Send Your Wish , what else can i do for you?</h3>
+    <textarea id="userMessage" placeholder= "Write something here.. take ss of this msg. after clicking on send, click 'ok' on the  ....message has been sent successfully..."></textarea><br>
+    <button onclick="sendMessage()">Send</button>
+  </div>
+</div>
+
+<!-- End Screen -->
+<div id="endScreen">
+  <h2>🎊 Thank you for celebrating this special day! 🎊</h2>
+  <p>May your days be filled with laughter, love and endless happiness 💖</p>
+</div>
+
+<script>
+const countdownEl = document.getElementById("countdown");
+const fireworksCanvas = document.getElementById("fireworks");
+const ctx = fireworksCanvas.getContext("2d");
+fireworksCanvas.width = window.innerWidth;
+fireworksCanvas.height = window.innerHeight;
+const bgMusic = document.getElementById("bgMusic");
+
+// Countdown
+let count = 10;
+countdownEl.style.display = "block";
+const timer = setInterval(() => {
+  countdownEl.textContent = count;
+  count--;
+  if (count < 0) {
+    clearInterval(timer);
+    countdownEl.style.display = "none";
+    startFireworks();
+    bgMusic.play();
+  }
+}, 1000);
+
+// Fireworks
+let particles = [];
+function random(min, max) { return Math.random() * (max - min) + min; }
+function createFirework() {
+  const x = random(100, fireworksCanvas.width - 100);
+  const y = random(100, fireworksCanvas.height / 2);
+  for (let i = 0; i < 50; i++) {
+    particles.push({ x, y, color: `hsl(${random(0,360)},100%,60%)`, radius: random(2, 4), speedX: random(-4, 4), speedY: random(-4, 4), alpha: 1 });
+  }
+}
+function drawFireworks() {
+  ctx.fillStyle = "rgba(0,0,0,0.2)";
+  ctx.fillRect(0,0,fireworksCanvas.width,fireworksCanvas.height);
+  particles.forEach((p, i) => {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    p.x += p.speedX;
+    p.y += p.speedY;
+    p.alpha -= 0.02;
+    if (p.alpha <= 0) particles.splice(i,1);
+  });
+  requestAnimationFrame(drawFireworks);
+}
+function startFireworks() {
+  document.getElementById("fireworks").style.display = "block";
+  drawFireworks();
+  let shots = 0;
+  const fwInterval = setInterval(() => {
+    createFirework();
+    shots++;
+    if (shots > 12) {
+      clearInterval(fwInterval);
+      setTimeout(() => {
+        document.getElementById("fireworks").style.display = "none";
+        document.getElementById("birthdayScreen").style.display = "block";
+      }, 2000);
+    }
+  }, 600);
+}
+
+// Cake sequence
+function showCake() {
+  document.getElementById("birthdayScreen").style.display = "none";
+  document.getElementById("cakeScreen").style.display = "block";
+}
+function blowCandle() {
+  document.getElementById("flame").style.display = "none";
+  document.getElementById("blowBtn").innerText = "🎂 Cut Cake";
+  document.getElementById("blowBtn").setAttribute("onclick", "cutCake()");
+}
+function cutCake() {
+  document.querySelector(".cake").style.opacity = "0.7";
+  document.getElementById("blowBtn").innerText = "🍰 Eat Cake";
+  document.getElementById("blowBtn").setAttribute("onclick", "eatCake()");
+}
+function eatCake() {
+  document.querySelector(".cake").style.opacity = "0";
+  setTimeout(() => {
+    document.getElementById("cakeScreen").style.display = "none";
+    document.getElementById("giftScreen").style.display = "block";
+  }, 1500);
+}
+
+// Gift & Letter
+function showGift() {
+  document.getElementById("birthdayScreen").style.display = "none";
+  document.getElementById("giftScreen").style.display = "block";
+}
+
+function openGift() {
+  const lid = document.getElementById("lid");
+  const openBtn = document.getElementById("openGiftBtn");
+  lid.classList.add("openLid");
+  openBtn.style.display = "none";
+  setTimeout(() => {
+    document.getElementById("letter").style.display = "block";
+    nextLetter();
+  }, 1500);
+}
+
+const letterMessages = [
+  "💌🎂 happiestttt birthdayyyy mr. handsomeee, my special one, my cutuu pyutu.💖 today is the day jb mujhe pyara sa babuaa mila .... hehehehe.... ye surprise kaisa laga. ess baar socha kuch alag trike se wish krte hai.... akhir pata lagna chahiye ki coder gf hai tmhari... 5 years to this day and counting more and i still love you the way i love you on your 1st bday since we are together. ye kuch shayri tmhare liye... do next...💕",
+  "🌷 yuu tera mil jana mujhe kisi duaa ka asar lagta hai, aisa too koi aashiyana nahi hai mera par tera dil mujhe apna ghar lagta hai.",
+  "🎂 kash tu chand mai sitara hota... aasman me aashiyana hmara hota.. log tmhe durr se dekhte...paas se dekhne ka haqq sirf hmara hota. 💖"
+];
+let letterIndex = 0;
+
+function nextLetter() {
+  const letterText = document.getElementById("letterText");
+  if (letterIndex < letterMessages.length) {
+    letterText.textContent = letterMessages[letterIndex];
+    letterIndex++;
+  } else {
+    document.getElementById("letter").style.display = "none";
+    document.getElementById("messageBox").style.display = "block";
+  }
+}
+
+function sendMessage() {
+  const msg = document.getElementById("userMessage").value.trim();
+  if (msg === "") {
+    alert("write your wish babuaa then send after taking ss. 💬");
+    return;
+  }
+  alert("Your message has been sent successfully! 💖");
+  document.getElementById("messageBox").innerHTML = "<h3>Thank you for celebrating your online bdayy . i hope you like it . love youu . umahhh💝</h3>";
+}
+</script>
+</body>
+</html>
